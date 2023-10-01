@@ -1,0 +1,68 @@
+#PROJECT-1:
+#Spyder.
+#Code to convert the json files and csv in order for better understanding and for power bi.
+#Libraries
+import pandas as pd
+import json
+
+#Opening Matches_result(table1)
+#Opening JSON file inorder to make a datafram for better understanding
+with open('C:/Users/user/Documents/t20_json_files/t20_json_files/t20_wc_match_results.json') as r:
+    data = json.load(r)
+match_res = pd.DataFrame(data[0]['matchSummary'])
+
+#Changing the coloumn name
+match_res.rename({'scorecard' : 'match_id'},axis=1,inplace = True)
+
+#Converting the json into csv and store it on your computer folder.
+match_res.to_csv('match_result.csv', index = False)
+
+#Batting_summary
+with open('C:/Users/user/Documents/t20_json_files/t20_json_files/t20_wc_batting_summary.json') as r:
+    data = json.load(r)
+    
+
+all_rec=[]    
+for rec in data:
+    all_rec.extend(rec['battingSummary'])
+    
+bat_sum = pd.DataFrame(all_rec)
+bat_sum["out/not_out"] = bat_sum.dismissal.apply(lambda x: "out" if len(x) > 0 else "not_out")
+bat_sum.drop(columns = ['dismissal'], inplace = True)
+
+dict_it = {}
+
+for index,row in match_res.iterrows():
+    key1 = row['team1'] + ' Vs ' + row['team2']
+    key2 = row['team2'] + ' Vs ' + row['team1']
+    
+    dict_it[key1] = row["match_id"]
+    dict_it[key2] = row["match_id"]
+
+bat_sum["match_id"] = bat_sum["match"].map(dict_it)
+#Converting the json into csv and store it on your computer folder.
+bat_sum.to_csv('batting_sum.csv', index = False)
+
+#Opening Bowling_summary JSON file
+with open('C:/Users/user/Documents/t20_json_files/t20_json_files/t20_wc_bowling_summary.json') as f:
+    data = json.load(f)
+    
+bow_rec = []
+for rec in data:
+    bow_rec.extend(rec['bowlingSummary'])
+    
+bow_sum = pd.DataFrame(bow_rec)
+
+bow_sum["match_id"] = bow_sum["match"].map(dict_it)
+#Converting the json into csv and store it on your computer folder.
+bow_sum.to_csv('bowling_sum.csv', index=False)
+
+#Opening players info table
+with open('C:/Users/user/Documents/t20_json_files/t20_json_files/t20_wc_player_info.json') as f:
+    data = json.load(f)
+
+player_info = pd.DataFrame(data)
+
+
+#Converting the json into csv and store it on your computer folder.
+player_info.to_csv('Player_info.csv', index = False)
