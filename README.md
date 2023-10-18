@@ -24,6 +24,8 @@ Technologies used -> MS Excel.
 
 I used Microsoft Excel to clean the data in the CSV files. The cleaning process involved removing duplicates and correcting erroneous values. In Python, I established connections between tables using specific keys, which greatly facilitates the analysis process.
 
+***I have give the csv files***
+
 3. Data visuaization:
 
 Technologies used -> Microsoft Power BI
